@@ -1,9 +1,10 @@
-package com.scanner.project;
 // Program.java
+
+// Daisy Molina and Uday Brathwaite
 
 // NOT TO BE MODIFIED (except if you are sure there is a bug!)
 
-// Abstract syntax of JAY but also for KAY
+// Abstract syntax of JAY 
 
 // Display methods are added to facilitate debugging and experimentation
 
@@ -16,10 +17,23 @@ public class Program {
 	public Declarations decpart;
 	public Block body;
 
+	//prevents NullPointerExceptions
+	public Program(Declarations d, Block b) {
+		if (d == null) d = new Declarations();
+        if (b == null) b = new Block();
+        this.decpart = d;
+        this.body = b;
+	}
+
+	//default constructor
+	public Program() {
+		this(new Declarations(), new Block());
+    }
+
 	public String display() {
 		int level = 0;
 		Indenter indent = new Indenter(level);
-		String s = indent.display("Abstract syntax of the KAY Program: ");
+		String s = indent.display("Abstract syntax of the JAY Program: ");
 		String dec = decpart.display(level + 1);
 		String bod = body.display(level + 1);
 		String nl = "\n";
@@ -75,11 +89,11 @@ class Declaration {
 }
 
 class Type {
-	// Type = integer | bool | undef
+	// Type = int | bool | undef
 
 	public String id;
 
-	final static String INTEGER = "integer";
+	final static String INTEGER = "int";
 	final static String BOOLEAN = "bool";
 	final static String UNDEFINED = "undef";
 
@@ -271,7 +285,7 @@ class Unary extends Expression {
 
 class Operator {
 
-	public String val; // value of the operator - one of the constant 
+	public String val; // value of the operator - one of the constant above
 
 	// Operator = BooleanOp | RelationalOp | ArithmeticOp | Unary1Op
 	// BooleanOp = && | ||
