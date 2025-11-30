@@ -1,3 +1,4 @@
+package com.scanner.project;
 // Program.java
 
 // Daisy Molina and Uday Brathwaite

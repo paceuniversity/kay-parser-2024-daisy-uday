@@ -1,3 +1,4 @@
+package com.scanner.project;
 public class Token {
 	// Uday Brathwaite and Daisy Molina
 	// Token type Identifier, Keyword, Literal, Separator, Operator, or Other
