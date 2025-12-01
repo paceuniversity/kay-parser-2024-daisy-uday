@@ -120,11 +120,18 @@ public class TokenStream {
             (char) currentChar == '&' || (char) currentChar == '|') {
 
             StringBuilder sb = new StringBuilder();
-            sb.append((char) currentChar);
+            char firstChar = (char) currentChar;
+            sb.append(firstChar);
             readNextChar();
 
-            if ((char) currentChar == '=' ||
-                ((sb.charAt(0) == '&' || sb.charAt(0) == '|') && sb.charAt(0) == (char) currentChar)) {
+            // Check for two-character operators
+            if ((char) currentChar == '=') {
+                // Handle :=, <=, >=, ==, !=
+                sb.append((char) currentChar);
+                readNextChar();
+            } else if ((firstChar == '&' && (char) currentChar == '&') ||
+                       (firstChar == '|' && (char) currentChar == '|')) {
+                // Handle && and ||
                 sb.append((char) currentChar);
                 readNextChar();
             }

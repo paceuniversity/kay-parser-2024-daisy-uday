@@ -34,7 +34,7 @@ public class Program {
 	public String display() {
 		int level = 0;
 		Indenter indent = new Indenter(level);
-		String s = indent.display("Abstract syntax of the JAY Program: ");
+		String s = indent.display("Abstract syntax of the KAY Program: ");
 		String dec = decpart.display(level + 1);
 		String bod = body.display(level + 1);
 		String nl = "\n";

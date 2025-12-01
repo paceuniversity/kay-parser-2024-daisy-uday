@@ -24,9 +24,23 @@ public class ConcreteSyntax {
         throw new RuntimeException(s);
     }
 
-    /** Match by value or type */
+    /** Match by value or type - more precise matching */
     private void match(String expected) {
-        if (token.getValue().equals(expected) || token.getType().equals(expected)) {
+        // Check if expected is a token type (like "Identifier", "Keyword", "Literal", etc.)
+        boolean isTokenType = expected.equals("Identifier") || expected.equals("Keyword") || 
+                              expected.equals("Literal") || expected.equals("Operator") || 
+                              expected.equals("Separator") || expected.equals("EOF");
+        
+        boolean matched = false;
+        if (isTokenType) {
+            // Match by type
+            matched = token.getType().equals(expected);
+        } else {
+            // Match by value (for keywords, operators, separators by value)
+            matched = token.getValue().equals(expected);
+        }
+        
+        if (matched) {
             token = input.nextToken();
         } else {
             throw new RuntimeException("Syntax error - Expecting: " + expected
@@ -44,22 +58,38 @@ public class ConcreteSyntax {
         return new Program(decpart, body);
     }
 
-    /** DECLARATIONS → { TYPE IDENT ; }* */
+    /** DECLARATIONS → { TYPE IDENT { , IDENT }* ; }* */
     private Declarations declarations() {
         Declarations decs = new Declarations();
 
         while (token.getValue().equals("integer") || token.getValue().equals("bool")) {
             String type = token.getValue();      // type keyword
             match("Keyword");                    // consume keyword
+            
+            // First identifier (required)
             String id = token.getValue();        // identifier
             match("Identifier");
-            match(";");
-
+            
             Declaration d = new Declaration();
             d.v = new Variable();
             d.v.id = id;
             d.t = new Type(type);
             decs.add(d);
+            
+            // Handle comma-separated identifiers
+            while (token.getValue().equals(",")) {
+                match(",");
+                id = token.getValue();
+                match("Identifier");
+                
+                d = new Declaration();
+                d.v = new Variable();
+                d.v.id = id;
+                d.t = new Type(type);
+                decs.add(d);
+            }
+            
+            match(";");
         }
         return decs;
     }
@@ -198,11 +228,11 @@ public class ConcreteSyntax {
             e = new Value(Integer.parseInt(token.getValue()));
             match("Literal");
 
-        } else if (token.getValue().equals("True")) {
+        } else if (token.getType().equals("Keyword") && token.getValue().equals("True")) {
             e = new Value(true);
             match("True");
 
-        } else if (token.getValue().equals("False")) {
+        } else if (token.getType().equals("Keyword") && token.getValue().equals("False")) {
             e = new Value(false);
             match("False");
 
